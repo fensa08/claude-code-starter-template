@@ -1,0 +1,36 @@
+CLAUDE.md: persistent instructions Claude reads at the start of every session. It lives at project root (shared via git), in ~/.claude/CLAUDE.md (personal, global), or in .claude/rules/ for modular rules.
+
+Do: keep it short, since every line costs context on every turn. Include build/test/lint commands, architecture map, code conventions, and gotchas Claude can't infer from the code. Use @path imports for big docs. Treat it like code: prune it, and when Claude repeats a mistake, add a line.
+Don't: paste in docs, style essays, or things a linter enforces. Avoid vague rules ("write clean code"), and don't put secrets in it.
+
+Hooks: deterministic scripts that fire on events (PreToolUse, PostToolUse, Stop, etc.), configured in .claude/settings.json.
+
+Use for things that must always happen: format on write, block edits to .env/lockfiles, run tests on stop, block secrets from commits.
+Do: keep them fast and idempotent, and use exit codes to block or feed errors back to Claude.
+Don't: use hooks for guidance (that's CLAUDE.md), or run slow checks on every edit.
+
+Skills: .claude/skills/<name>/SKILL.md. Reusable, on-demand instructions and scripts, loaded only when relevant. 
+github
+
+Do: write a specific description (that's what triggers loading), keep the SKILL.md lean, and put heavy reference material in side files.
+Don't: duplicate what belongs in CLAUDE.md (always-needed context). Skills are for task-specific procedures like releases, PR descriptions, or migrations.
+
+MCP servers: connect external tools and data (GitHub, DB, Sentry, browsers). They're configured in .mcp.json or settings.json. 
+github
+
+Do: install only what you use, scope to project, and use read-only credentials where possible.
+Don't: load many servers, since tool definitions eat context. Never hardcode tokens (use env vars), and treat third-party servers as untrusted code. For simple things, a CLI (gh, aws) is often cheaper than an MCP.
+
+Subagents and commands: .claude/agents/ for isolated tasks (review, research) that keep your main context clean. .claude/commands/ for reusable prompts you trigger manually.
+
+Workflows that work
+
+Explore, then plan (plan mode), then implement, then verify. Don't jump straight to coding on non-trivial tasks.
+Give Claude a way to verify itself: tests, a linter, a type-check, or a screenshot.
+Use /clear between unrelated tasks and /compact when context bloats. Use git worktrees for parallel sessions.
+Commit often, and use checkpoints//rewind as a safety net.
+Use a narrow permission allowlist rather than skipping permissions. If you use autonomous modes, do it in a sandbox or container.
+
+Biggest mistakes: bloated CLAUDE.md, too many MCPs, using CLAUDE.md for rules that should be hooks, no verification step, and one endless session for everything.
+
+The sources I found are community guides, so check the official docs at docs.claude.com for exact config syntax and current hook events.

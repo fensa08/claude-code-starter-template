@@ -1,0 +1,62 @@
+
+20/80 - Rules: 
+1. Make rules concrete. "Use named exports" or "use logger, never console.log". A checkable rule gets followed, and a vague one gets ignored.
+2. Scope them. Put the rule in a file with a path glob so it only loads when relevant. This keeps context clean and rules sharp.
+3. Write rules from real mistakes. Only add one when Claude actually gets something wrong. Preemptive rules are mostly noise.
+4. Add the "why" in a few words. "Don't edit /generated (overwritten on build)" lets Claude handle edge cases on its own.
+5. Prune regularly. If deleting a rule wouldn't change Claude's behavior, delete it.
+
+Everything else (fancy formatting, exhaustive coverage, heavy emphasis like all-caps NEVER) is the other 80% of effort for small gains.
+
+And if a rule must never be broken, skip the rule and use a hook.
+
+Writing rules
+- Make each rule concrete and checkable
+- Say what to do, not just what to avoid
+- Give the why in a few words
+- Show one tiny example when the rule is fuzzy
+- One topic per file, scoped tightly
+- Keep them short
+- Don't restate what tooling already enforces
+
+
+Make each rule concrete and checkable
+
+- "Use logger.info(), never console.log" beats "log responsibly."
+- If you couldn't tell whether the rule was followed by looking at the diff, it's too vague.
+
+Say what to do, not just what to avoid
+
+- "Don't use default exports" is fine, but "Use named exports" leaves less room for guessing.
+- When you do write a "never", add the alternative.
+
+Give the why in a few words
+
+- "Never edit /generated (overwritten on build)" helps Claude handle edge cases better than a bare command, like knowing to edit the source instead.
+
+Show one tiny example when the rule is fuzzy
+
+- A 3-line good/bad snippet beats a paragraph of explanation.
+
+One topic per file, scoped tightly
+
+- testing.md scoped to **/*.test.ts, migrations.md scoped to db/migrations/**. Unscoped rules should be truly universal.
+
+Keep them short
+
+- A rules file should be readable in under a minute. If it's long, split it or cut it.
+
+Don't restate what tooling already enforces
+
+- If ESLint or Prettier catches it, skip the rule, or better, run the tool in a hook.
+
+
+
+Writing rules
+- Make each rule concrete and checkable
+- Say what to do, not just what to avoid
+- Give the why in a few words
+- Show one tiny example when the rule is fuzzy
+- One topic per file, scoped tightly
+- Keep them short
+- Don't restate what tooling already enforces
